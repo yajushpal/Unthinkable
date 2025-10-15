@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Task Planner</title>
+</head>
+<body>
+    <h1>Smart Task Planner</h1>
+    <form id="goalForm">
+        <label for="goal">Enter your goal:</label><br>
+        <input type="text" id="goal" name="goal" required><br><br>
+        <button type="submit">Generate Plan</button>
+    </form>
+
+    <h2>Generated Task Plan:</h2>
+    <pre id="taskPlan"></pre>
+
+    <script>
+        document.getElementById('goalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const goalText = document.getElementById('goal').value;
+            
+            const response = await fetch('http://127.0.0.1:5000/plan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ goal: goalText }),
+            });
+
+            const data = await response.json();
+
+            if (data.task_plan) {
+                document.getElementById('taskPlan').textContent = data.task_plan;
+            } else {
+                document.getElementById('taskPlan').textContent = 'Error: ' + data.error;
+            }
+        });
+    </script>
+</body>
+</html>
